@@ -2,36 +2,47 @@
 
 require('dotenv').config();
 const events = require('./events');
-const faker = require('faker');
-const STORE = process.env.STORE;
 
 
 
-
-function make(){
-
- return{
+events.on('pickup',pickupHandler);
+function pickupHandler(payload) {
+  const log = {
     event: 'pickup',
     time: new Date().toISOString(),
-    payload:{
-      store: STORE,
-      orderID: faker.datatype.uuid(),
-      customer: faker.name.findName(),
-      address: `${faker.address.city()}, ${faker.address.stateAbbr()}`,
+    payload: {
+      store: payload.store,
+      orderID: payload.orderID,
+      customer: payload.customer,
+      address: payload.address,
     },
   };
+  console.log('EVENT', log);
 }
-make();
-console.log(make(),'jjjjjjjjj')
 
-console.log(make(),'zzzzzzz')
-
-events.on('pickup', (payload) => {
-  console.log('EVENT ', payload);
-});
-
-
-
-module.exports={
-  make
+events.on('inTransit',intransitHandler);
+function intransitHandler(payload) {
+  const log = {
+    event: 'in-transit',
+    time: new Date().toISOString(),
+    payload: {
+      store: payload.store,
+      orderID: payload.orderID,
+      customer: payload.customer,
+      address: payload.address,
+    },
+  };
+  console.log('EVENT', log);
+  setTimeout(() => {
+    events.emit('delivered', payload);
+  }, 3000);
 }
+
+events.on('thanks',thanksdHandler);
+function thanksdHandler(payload) {
+  console.log(`VENDOR: Thank you for delivering ${payload.orderID}`);
+  events.emit('lastDelivered', payload);
+}
+
+
+
