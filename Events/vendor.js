@@ -46,3 +46,6 @@ function thanksdHandler(payload) {
 
 
 
+module.exports={pickupHandler,
+  intransitHandler,
+  thanksdHandler};

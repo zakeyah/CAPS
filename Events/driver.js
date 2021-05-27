@@ -31,3 +31,6 @@ function lastDeliveredHandler(payload) {
   console.log('EVENT', log);
 }
 
+module.exports={pickUp,
+  deliveredHandler,
+  lastDeliveredHandler}
